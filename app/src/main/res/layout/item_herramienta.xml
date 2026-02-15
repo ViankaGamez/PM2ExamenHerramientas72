@@ -1,39 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/itemRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="12dp"
-    android:layout_marginBottom="10dp">
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="14dp"
+    app:cardElevation="4dp"
+    android:padding="14dp">
 
-    <TextView
-        android:id="@+id/txtNombre"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Nombre herramienta"
-        android:textStyle="bold"
-        android:textSize="18sp"/>
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/txtTecnico"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Técnico: (si aplica)"
-        android:layout_marginTop="4dp"/>
+        <!-- Nombre herramienta -->
+        <TextView
+            android:id="@+id/txtNombre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nombre herramienta"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="#2C3E50"/>
 
-    <TextView
-        android:id="@+id/txtFechaFin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Entrega: (si aplica)"
-        android:layout_marginTop="2dp"/>
+        <!-- Técnico -->
+        <TextView
+            android:id="@+id/txtTecnico"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Técnico: -"
+            android:layout_marginTop="6dp"
+            android:textColor="#34495E"/>
 
-    <TextView
-        android:id="@+id/txtEstado"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Estado"
-        android:layout_marginTop="2dp"/>
+        <!-- Fecha -->
+        <TextView
+            android:id="@+id/txtFechaFin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Entrega: -"
+            android:layout_marginTop="2dp"
+            android:textColor="#5D6D7E"/>
 
-</LinearLayout>
+        <!-- Estado como badge -->
+        <TextView
+            android:id="@+id/txtEstado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Estado"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#7F8C8D"
+            android:background="@android:drawable/btn_default" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
+

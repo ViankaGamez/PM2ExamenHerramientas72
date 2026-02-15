@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F5F6FA"
     android:padding="16dp">
 
     <LinearLayout
@@ -9,67 +11,111 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/txtHerramienta"
+        <!-- Card principal -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Herramienta:"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:paddingBottom="10dp" />
+            app:cardCornerRadius="16dp"
+            app:cardElevation="6dp"
+            android:padding="16dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Técnico *" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <Spinner
-            android:id="@+id/spTecnicos"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+                <!-- Título -->
+                <TextView
+                    android:id="@+id/txtHerramienta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Herramienta:"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="#2C3E50"
+                    android:paddingBottom="12dp" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Fecha inicio *"
-            android:layout_marginTop="12dp" />
+                <!-- Técnico -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Técnico *"
+                    android:textStyle="bold"
+                    android:textColor="#34495E"
+                    android:layout_marginTop="8dp"/>
 
-        <EditText
-            android:id="@+id/edtInicio"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="yyyy-MM-dd HH:mm"
-            android:focusable="false" />
+                <Spinner
+                    android:id="@+id/spTecnicos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/edit_text"
+                    android:padding="8dp"
+                    android:layout_marginTop="4dp"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Fecha fin *"
-            android:layout_marginTop="12dp" />
+                <!-- Fecha Inicio -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:boxBackgroundMode="outline">
 
-        <EditText
-            android:id="@+id/edtFin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="yyyy-MM-dd HH:mm"
-            android:focusable="false" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtInicio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Fecha inicio (yyyy-MM-dd HH:mm)"
+                        android:focusable="false"/>
+                </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/edtNotas"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Notas de entrega (opcional)"
-            android:inputType="textMultiLine"
-            android:minLines="2"
-            android:gravity="top"
-            android:layout_marginTop="12dp" />
+                <!-- Fecha Fin -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    app:boxBackgroundMode="outline">
 
-        <Button
-            android:id="@+id/btnAsignar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Asignar"
-            android:layout_marginTop="14dp" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtFin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Fecha fin (yyyy-MM-dd HH:mm)"
+                        android:focusable="false"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Notas -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    app:boxBackgroundMode="outline">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtNotas"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Notas de entrega (opcional)"
+                        android:inputType="textMultiLine"
+                        android:minLines="3"
+                        android:gravity="top"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Botón -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAsignar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Asignar Herramienta"
+                    android:textAllCaps="false"
+                    android:layout_marginTop="20dp"
+                    app:cornerRadius="12dp"
+                    app:backgroundTint="#3498DB"
+                    android:textColor="@android:color/white"/>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 </ScrollView>
+
+

@@ -1,10 +1,12 @@
 package com.example.pm2examenherramientas72;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,8 +17,11 @@ import com.example.pm2examenherramientas72.Configuraciones.SQLiteConexion;
 import com.example.pm2examenherramientas72.Configuraciones.Transacciones;
 import com.example.pm2examenherramientas72.Models.HerramientaItem;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class HerramientaListActivity extends AppCompatActivity {
 
@@ -41,19 +46,24 @@ public class HerramientaListActivity extends AppCompatActivity {
         data = obtenerHerramientasConAsignacionActiva();
 
         adapter = new HerramientaAdapter(this, data, item -> {
-            // Solo permitir asignar si está DISPONIBLE
+
+            // Si está DISPONIBLE -> asignar
             if ("DISPONIBLE".equalsIgnoreCase(item.estado)) {
-                android.content.Intent i = new android.content.Intent(this, AsignarActivity.class);
+                Intent i = new Intent(this, AsignarActivity.class);
                 i.putExtra("herramienta_id", item.id);
                 i.putExtra("herramienta_nombre", item.nombre);
                 startActivity(i);
-            } else {
-                new androidx.appcompat.app.AlertDialog.Builder(this)
-                        .setTitle("No disponible")
-                        .setMessage("Esta herramienta ya está asignada.")
-                        .setPositiveButton("OK", (d,w)->d.dismiss())
-                        .show();
+                return;
             }
+
+            // Si está ASIGNADA -> acciones (Devolver / Compartir)
+            new AlertDialog.Builder(this)
+                    .setTitle("Acciones")
+                    .setMessage("Herramienta: " + item.nombre)
+                    .setPositiveButton("Marcar devolución", (d, w) -> marcarDevolucion(item.id))
+                    .setNeutralButton("Compartir resumen", (d, w) -> compartirResumen(item))
+                    .setNegativeButton("Cancelar", (d, w) -> d.dismiss())
+                    .show();
         });
 
         recycler.setAdapter(adapter);
@@ -73,9 +83,81 @@ public class HerramientaListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        recargarLista();
+    }
+
+    private void recargarLista() {
         data.clear();
         data.addAll(obtenerHerramientasConAsignacionActiva());
         adapter.notifyDataSetChanged();
+    }
+
+    private void marcarDevolucion(int herramientaId) {
+        SQLiteConexion conexion = new SQLiteConexion(this, Transacciones.dbname, null, Transacciones.dbversion);
+        SQLiteDatabase db = conexion.getWritableDatabase();
+
+        // Fecha actual en formato yyyy-MM-dd HH:mm
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+        String ahora = sdf.format(new Date());
+
+        // 1) Set fecha_devolucion a la asignación activa (la que no tiene devolución)
+        ContentValues updAsign = new ContentValues();
+        updAsign.put(Transacciones.a_fecha_devolucion, ahora);
+
+        int filas = db.update(
+                Transacciones.tbAsignaciones,
+                updAsign,
+                Transacciones.a_herramienta_id + "=? AND " + Transacciones.a_fecha_devolucion + " IS NULL",
+                new String[]{String.valueOf(herramientaId)}
+        );
+
+        // 2) Cambiar estado de la herramienta a DISPONIBLE
+        ContentValues updHerr = new ContentValues();
+        updHerr.put(Transacciones.h_estado, "DISPONIBLE");
+
+        db.update(
+                Transacciones.tbHerramientas,
+                updHerr,
+                Transacciones.h_id + "=?",
+                new String[]{String.valueOf(herramientaId)}
+        );
+
+        db.close();
+
+        if (filas > 0) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Devolución")
+                    .setMessage("Devolución registrada correctamente.")
+                    .setPositiveButton("OK", (d,w)-> d.dismiss())
+                    .show();
+
+            recargarLista();
+        } else {
+            new AlertDialog.Builder(this)
+                    .setTitle("Aviso")
+                    .setMessage("No se encontró asignación activa para devolver.")
+                    .setPositiveButton("OK", (d,w)-> d.dismiss())
+                    .show();
+        }
+    }
+
+    private void compartirResumen(HerramientaItem item) {
+        String tecnico = (item.tecnicoNombre == null) ? "-" : item.tecnicoNombre;
+        String fin = (item.fechaFin == null) ? "-" : item.fechaFin;
+
+        String resumen =
+                "Resumen de Asignación\n" +
+                        "Herramienta: " + item.nombre + "\n" +
+                        "Técnico: " + tecnico + "\n" +
+                        "Entrega programada: " + fin + "\n" +
+                        "Estado: " + item.estado + "\n";
+
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("text/plain");
+        i.putExtra(Intent.EXTRA_SUBJECT, "Resumen de herramienta");
+        i.putExtra(Intent.EXTRA_TEXT, resumen);
+
+        startActivity(Intent.createChooser(i, "Compartir con..."));
     }
 
     private void seedTecnicosSiVacio() {
@@ -112,7 +194,6 @@ public class HerramientaListActivity extends AppCompatActivity {
             db.insert(Transacciones.tbTecnicos, null, t2);
             db.insert(Transacciones.tbTecnicos, null, t3);
             db.insert(Transacciones.tbTecnicos, null, t4);
-
         }
 
         db.close();
@@ -124,8 +205,6 @@ public class HerramientaListActivity extends AppCompatActivity {
         SQLiteConexion conexion = new SQLiteConexion(this, Transacciones.dbname, null, Transacciones.dbversion);
         SQLiteDatabase db = conexion.getReadableDatabase();
 
-        // JOIN: trae herramienta + (si existe) última asignación activa (fecha_devolucion IS NULL) + técnico
-        // Orden: próximas entregas primero; disponibles al final
         String sql =
                 "SELECT h.id, h.nombre, h.especificaciones, h.estado, " +
                         "       t.nombre AS tecnico_nombre, a.fecha_fin, a.fecha_devolucion " +
@@ -141,8 +220,8 @@ public class HerramientaListActivity extends AppCompatActivity {
                         ") a ON a.herramienta_id = h.id " +
                         "LEFT JOIN " + Transacciones.tbTecnicos + " t ON t.id = a.tecnico_id " +
                         "ORDER BY " +
-                        "  CASE WHEN a.fecha_fin IS NULL THEN 1 ELSE 0 END, " +  // disponibles al final
-                        "  a.fecha_fin ASC;";                                  // próximas entregas primero
+                        "  CASE WHEN a.fecha_fin IS NULL THEN 1 ELSE 0 END, " +
+                        "  a.fecha_fin ASC;";
 
         Cursor c = db.rawQuery(sql, null);
 
