@@ -29,7 +29,7 @@ public class Transacciones {
     public static final String a_id = "id";
     public static final String a_herramienta_id = "herramienta_id";
     public static final String a_tecnico_id = "tecnico_id";
-    public static final String a_fecha_inicio = "fecha_inicio";       // ISO 8601
+    public static final String a_fecha_inicio = "fecha_inicio";
     public static final String a_fecha_fin = "fecha_fin";             // entrega programada
     public static final String a_fecha_devolucion = "fecha_devolucion"; // null si no se entregó
     public static final String a_notas_entrega = "notas_entrega";

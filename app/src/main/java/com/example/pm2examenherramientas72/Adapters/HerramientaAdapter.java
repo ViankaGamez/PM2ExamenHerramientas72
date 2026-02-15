@@ -32,7 +32,7 @@ public class HerramientaAdapter extends RecyclerView.Adapter<HerramientaAdapter.
     private final List<HerramientaItem> listaOriginal;
     private final List<HerramientaItem> listaFiltrada;
 
-    // Listener (puede ser null si no lo pasas)
+    // Listener
     private final OnItemClick listener;
 
     // Formato de fecha usado (debe coincidir con lo guardado en BD)

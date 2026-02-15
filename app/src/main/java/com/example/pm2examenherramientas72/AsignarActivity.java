@@ -31,7 +31,6 @@ public class AsignarActivity extends AppCompatActivity {
     private int herramientaId;
     private String herramientaNombre;
 
-    // Para Spinner: guardamos ids y nombres en paralelo
     private final ArrayList<Integer> tecnicosIds = new ArrayList<>();
     private final ArrayList<String> tecnicosNombres = new ArrayList<>();
 
@@ -49,7 +48,7 @@ public class AsignarActivity extends AppCompatActivity {
         edtNotas = findViewById(R.id.edtNotas);
         btnAsignar = findViewById(R.id.btnAsignar);
 
-        // Recibimos herramienta desde Intent
+        // Recibe herramienta desde Intent
         herramientaId = getIntent().getIntExtra("herramienta_id", -1);
         herramientaNombre = getIntent().getStringExtra("herramienta_nombre");
 

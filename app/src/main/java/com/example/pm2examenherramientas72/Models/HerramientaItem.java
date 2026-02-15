@@ -6,10 +6,10 @@ public class HerramientaItem {
     public String especificaciones;
     public String estado;
 
-    // datos del JOIN (pueden venir null si está DISPONIBLE)
+    // datos del JOIN
     public String tecnicoNombre; // null si no hay asignación activa
     public String fechaFin;      // null si no hay asignación activa
-    public String fechaDevolucion; // si quieres usarlo luego
+    public String fechaDevolucion;
 
     public HerramientaItem(int id, String nombre, String especificaciones, String estado,
                            String tecnicoNombre, String fechaFin, String fechaDevolucion) {
