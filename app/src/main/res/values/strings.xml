@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">PM011P2026</string>
+    <string name="nombre">nombre</string>
+    <string name="apellido">apellido</string>
+    <string name="edad">edad</string>
+    <string name="correo">correo</string>
+    <string name="agregar">agregar</string>
+    <string name="foto">foto\n</string>
+</resources>
