@@ -23,17 +23,26 @@ import java.util.Locale;
 
 public class HerramientaAdapter extends RecyclerView.Adapter<HerramientaAdapter.VH> implements Filterable {
 
+    // Interfaz para manejar el click en un item
+    public interface OnItemClick {
+        void onClick(HerramientaItem item);
+    }
+
     private final Context context;
     private final List<HerramientaItem> listaOriginal;
     private final List<HerramientaItem> listaFiltrada;
 
-    // Formato ISO “simple” recomendado para guardar/leer (ej: 2026-02-15 14:30)
+    // Listener (puede ser null si no lo pasas)
+    private final OnItemClick listener;
+
+    // Formato de fecha usado (debe coincidir con lo guardado en BD)
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
 
-    public HerramientaAdapter(Context context, List<HerramientaItem> data) {
+    public HerramientaAdapter(Context context, List<HerramientaItem> data, OnItemClick listener) {
         this.context = context;
         this.listaOriginal = data;
         this.listaFiltrada = new ArrayList<>(data);
+        this.listener = listener;
     }
 
     @Override
@@ -55,12 +64,12 @@ public class HerramientaAdapter extends RecyclerView.Adapter<HerramientaAdapter.
         String entrega = (item.fechaFin == null) ? "Entrega: - " : "Entrega: " + item.fechaFin;
         h.txtFechaFin.setText(entrega);
 
-        // Colores según reglas del PDF:
-        // Rojo: asignada y vencida (hoy > fecha_fin, sin devolucion)
-        // Ámbar: asignada y faltan <=48h
-        // Verde: devuelta (tiene fecha_devolucion)  (en esta pantalla normalmente no tendrás devolución activa)
-        // Gris: disponible (sin asignación activa)
         aplicarColor(h.itemView, item);
+
+        // Click del item -> lo maneja la Activity (Asignar)
+        h.itemView.setOnClickListener(v -> {
+            if (listener != null) listener.onClick(item);
+        });
     }
 
     private void aplicarColor(View itemView, HerramientaItem item) {
@@ -70,7 +79,7 @@ public class HerramientaAdapter extends RecyclerView.Adapter<HerramientaAdapter.
             return;
         }
 
-        // Si en el futuro traes fechaDevolucion en lista, verde
+        // Si trae fechaDevolucion -> verde
         if (item.fechaDevolucion != null && !item.fechaDevolucion.trim().isEmpty()) {
             itemView.setBackgroundColor(ContextCompat.getColor(context, android.R.color.holo_green_light));
             return;
@@ -79,6 +88,12 @@ public class HerramientaAdapter extends RecyclerView.Adapter<HerramientaAdapter.
         // Si hay fechaFin, calculamos vencida / <=48h
         try {
             Date fin = sdf.parse(item.fechaFin);
+
+            if (fin == null) {
+                itemView.setBackgroundColor(ContextCompat.getColor(context, android.R.color.darker_gray));
+                return;
+            }
+
             long ahora = System.currentTimeMillis();
             long diffMs = fin.getTime() - ahora;
             long diffHoras = diffMs / (1000L * 60L * 60L);
@@ -90,12 +105,10 @@ public class HerramientaAdapter extends RecyclerView.Adapter<HerramientaAdapter.
                 // <= 48 horas
                 itemView.setBackgroundColor(ContextCompat.getColor(context, android.R.color.holo_orange_light));
             } else {
-                // asignada pero aún falta más de 48h
+                // asignada (todavía falta)
                 itemView.setBackgroundColor(ContextCompat.getColor(context, android.R.color.holo_blue_light));
             }
-
         } catch (ParseException e) {
-            // Si no pudo parsear, deja gris para evitar crash
             itemView.setBackgroundColor(ContextCompat.getColor(context, android.R.color.darker_gray));
         }
     }

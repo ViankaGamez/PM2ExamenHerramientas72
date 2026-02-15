@@ -41,6 +41,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PM011P2026">
         <activity
+            android:name=".AsignarActivity"
+            android:exported="false" />
+        <activity
             android:name=".HerramientaListActivity"
             android:exported="false" />
         <activity

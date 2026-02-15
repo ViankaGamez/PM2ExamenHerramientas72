@@ -1,5 +1,6 @@
 package com.example.pm2examenherramientas72;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -34,10 +35,27 @@ public class HerramientaListActivity extends AppCompatActivity {
 
         recycler.setLayoutManager(new LinearLayoutManager(this));
 
+        seedTecnicosSiVacio();
+
         // Cargar desde SQLite usando JOIN
         data = obtenerHerramientasConAsignacionActiva();
 
-        adapter = new HerramientaAdapter(this, data);
+        adapter = new HerramientaAdapter(this, data, item -> {
+            // Solo permitir asignar si está DISPONIBLE
+            if ("DISPONIBLE".equalsIgnoreCase(item.estado)) {
+                android.content.Intent i = new android.content.Intent(this, AsignarActivity.class);
+                i.putExtra("herramienta_id", item.id);
+                i.putExtra("herramienta_nombre", item.nombre);
+                startActivity(i);
+            } else {
+                new androidx.appcompat.app.AlertDialog.Builder(this)
+                        .setTitle("No disponible")
+                        .setMessage("Esta herramienta ya está asignada.")
+                        .setPositiveButton("OK", (d,w)->d.dismiss())
+                        .show();
+            }
+        });
+
         recycler.setAdapter(adapter);
 
         // SearchView filtra por nombre herramienta, técnico o especificaciones
@@ -50,6 +68,54 @@ public class HerramientaListActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        data.clear();
+        data.addAll(obtenerHerramientasConAsignacionActiva());
+        adapter.notifyDataSetChanged();
+    }
+
+    private void seedTecnicosSiVacio() {
+        SQLiteConexion conexion = new SQLiteConexion(this, Transacciones.dbname, null, Transacciones.dbversion);
+        SQLiteDatabase db = conexion.getWritableDatabase();
+
+        Cursor c = db.rawQuery("SELECT COUNT(*) FROM " + Transacciones.tbTecnicos, null);
+        int count = 0;
+        if (c.moveToFirst()) count = c.getInt(0);
+        c.close();
+
+        if (count == 0) {
+            ContentValues t1 = new ContentValues();
+            t1.put(Transacciones.t_nombre, "Juan Pérez");
+            t1.put(Transacciones.t_telefono, "8888-8888");
+            t1.put(Transacciones.t_especialidad, "Electricidad");
+
+            ContentValues t2 = new ContentValues();
+            t2.put(Transacciones.t_nombre, "Ana López");
+            t2.put(Transacciones.t_telefono, "9999-9999");
+            t2.put(Transacciones.t_especialidad, "Mecánica");
+
+            ContentValues t3 = new ContentValues();
+            t3.put(Transacciones.t_nombre, "Suyapa Melgar");
+            t3.put(Transacciones.t_telefono, "9876-5432");
+            t3.put(Transacciones.t_especialidad, "Mecánica");
+
+            ContentValues t4 = new ContentValues();
+            t4.put(Transacciones.t_nombre, "Miguel Sanchez");
+            t4.put(Transacciones.t_telefono, "8765-4321");
+            t4.put(Transacciones.t_especialidad, "Mecánica");
+
+            db.insert(Transacciones.tbTecnicos, null, t1);
+            db.insert(Transacciones.tbTecnicos, null, t2);
+            db.insert(Transacciones.tbTecnicos, null, t3);
+            db.insert(Transacciones.tbTecnicos, null, t4);
+
+        }
+
+        db.close();
     }
 
     private List<HerramientaItem> obtenerHerramientasConAsignacionActiva() {
