@@ -2,6 +2,7 @@ package com.example.pm2examenherramientas72;
 
 import android.Manifest;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -99,6 +100,12 @@ public class HerramientaFormActivity extends AppCompatActivity {
 
         // Botón: guardar herramienta en SQLite
         btnGuardar.setOnClickListener(v -> guardarHerramienta());
+
+        Button btnVerLista = findViewById(R.id.btnVerLista);
+        btnVerLista.setOnClickListener(v -> {
+            startActivity(new Intent(this, HerramientaListActivity.class));
+        });
+
     }
 
     private void guardarHerramienta() {

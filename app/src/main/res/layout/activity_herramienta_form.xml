@@ -83,5 +83,12 @@
             android:text="Guardar herramienta"
             android:layout_marginTop="10dp" />
 
+        <Button
+            android:id="@+id/btnVerLista"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ver lista de herramientas"
+            android:layout_marginTop="10dp" />
+
     </LinearLayout>
 </ScrollView>
