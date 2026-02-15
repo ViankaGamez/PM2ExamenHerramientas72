@@ -5,17 +5,18 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
-
     <uses-feature
         android:name="android.hardware.camera2"
         android:required="false" />
 
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <queries>
+
         <!-- Browser -->
         <intent>
             <action android:name="android.intent.action.VIEW" />
+
             <data android:scheme="http" />
         </intent>
 
@@ -40,7 +41,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PM011P2026">
         <activity
-            android:name=".MainActivity"
+            android:name=".HerramientaListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".HerramientaFormActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -48,6 +52,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>

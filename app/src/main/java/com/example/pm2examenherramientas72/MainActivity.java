@@ -48,13 +48,16 @@ public class MainActivity extends AppCompatActivity {
         btnAgregar = (Button) findViewById(R.id.boton);
         btnFoto = (Button) findViewById(R.id.botonFoto);
 
+        /*
         btnAgregar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Toast.makeText(getApplicationContext(), "Hola", Toast.LENGTH_LONG).show();
-                AddPersona();
+                //AddPersona();
             }
         });
+
+         */
 
         btnFoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,17 +111,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /*
     private void AddPersona() {
         try {
             SQLiteConexion conexion = new SQLiteConexion(this, Transacciones.dbname,null, Transacciones.dbversion);
             SQLiteDatabase db = conexion.getWritableDatabase();
 
             ContentValues valores = new ContentValues();
-            valores.put(Transacciones.nombre, nombre.getText().toString());
-            valores.put(Transacciones.apellido, apellido.getText().toString());
-            valores.put(Transacciones.correo, correo.getText().toString());
-            valores.put(Transacciones.edad, edad.getText().toString());
-            valores.put(Transacciones.foto, "");
+            valores.put(Transacciones.h_nombre, nombre.getText().toString());
+            valores.put(Transacciones.h_descripcion, descripcion.getText().toString());
+            valores.put(Transacciones.h_especificaciones, especificaciones.getText().toString());
+            valores.put(Transacciones.h_foto_uri, "");
+            valores.put(Transacciones.h_estado, "DISPONIBLE");
+
 
             Long resultado = db.insert(Transacciones.tbPersonas, Transacciones.id, valores);
             Toast.makeText(getApplicationContext(), "Registro Ingresado " + resultado.toString(), Toast.LENGTH_LONG).show();
@@ -130,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Ha ocurrido un error " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
+     */
 
     private void LimpiarPantalla(){
         nombre.setText("");
