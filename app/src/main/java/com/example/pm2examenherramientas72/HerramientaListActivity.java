@@ -87,9 +87,8 @@ public class HerramientaListActivity extends AppCompatActivity {
     }
 
     private void recargarLista() {
-        data.clear();
-        data.addAll(obtenerHerramientasConAsignacionActiva());
-        adapter.notifyDataSetChanged();
+        List<HerramientaItem> nuevos = obtenerHerramientasConAsignacionActiva();
+        adapter.updateData(nuevos);
     }
 
     private void marcarDevolucion(int herramientaId) {

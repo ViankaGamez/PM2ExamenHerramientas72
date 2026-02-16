@@ -72,6 +72,18 @@ public class HerramientaAdapter extends RecyclerView.Adapter<HerramientaAdapter.
         });
     }
 
+    public void updateData(List<HerramientaItem> nuevos) {
+        // Actualiza lista original (fuente del filtro)
+        listaOriginal.clear();
+        listaOriginal.addAll(nuevos);
+
+        // Actualiza lista filtrada (lo que se muestra)
+        listaFiltrada.clear();
+        listaFiltrada.addAll(nuevos);
+
+        notifyDataSetChanged();
+    }
+
     private void aplicarColor(View itemView, HerramientaItem item) {
         // Disponible: no tiene asignación activa -> gris
         if (item.tecnicoNombre == null || item.fechaFin == null) {
